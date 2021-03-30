@@ -4,6 +4,7 @@ using UnityEngine;
 using Mirror;
 using System.Collections.Generic;
 using MEC;
+using UnityEngine.Playables;
 
 namespace EFE
 {
@@ -24,14 +25,19 @@ namespace EFE
             if (!plugin.Config.Roles.ContainsKey(ev.Target.Role))
                 return;
 
-            for (uint i = 0; i < plugin.Config.Roles[ev.Target.Role]; i++)
+            RoleType role = ev.Target.Role;
+            if (role == RoleType.Spectator)
+            {
+                return;
+            }
+
+            for (uint i = 0; i < plugin.Config.Roles[role]; i++)
             {
                 Timing.CallDelayed(0.1f * i, () =>
                 {
-                    Grenade grenade =
-                    Object.Instantiate(ev.Target.ReferenceHub.GetComponent<GrenadeManager>().availableGrenades[0].grenadeInstance).GetComponent<Grenade>();
+                    Grenade grenade = Object.Instantiate(ev.Target.GrenadeManager.availableGrenades[0].grenadeInstance).GetComponent<Grenade>();
+                    grenade.fuseDuration = plugin.Config.FuseTime;
                     grenade.InitData(ev.Target.ReferenceHub.GetComponent<GrenadeManager>(), Vector3.zero, Vector3.zero, 0);
-                    grenade.NetworkfuseTime = plugin.Config.FuseTime;
 
                     EfeGrenades.Add(grenade.gameObject);
                     NetworkServer.Spawn(grenade.gameObject);

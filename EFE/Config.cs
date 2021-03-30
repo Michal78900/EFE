@@ -10,7 +10,7 @@ namespace EFE
         public bool IsEnabled { get; set; } = true;
 
         [Description("The fuse time (in seconds) of the spawned grenades.")]
-        public double FuseTime { get; set; } = 1;
+        public float FuseTime { get; set; } = 1f;
 
         [Description("Should spawned grenades deal damage to players.")]
         public bool AllowDamage { get; set; } = true;
